@@ -12,6 +12,10 @@ const redirectRoutes = require("./routes/redirect");
 const renderErrorPage = require("./utils/errorPage");
 
 const app = express();
+if (config.isProduction) {
+  // Trust first proxy hop when deployed behind reverse proxy (e.g. Render/Cloudflare) per AGENTS.md §8
+  app.set("trust proxy", 1);
+}
 
 // Path to frontend directory
 const frontendPath = path.join(__dirname, "..", "frontend");

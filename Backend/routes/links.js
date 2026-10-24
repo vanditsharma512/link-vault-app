@@ -9,6 +9,23 @@ const { generateShortCode } = require("../utils/shortCode");
 
 const router = express.Router();
 
+/**
+ * Determine the base URL for short link creation and client responses.
+ * Respects configured BASE_URL when not pointing to localhost, otherwise dynamically
+ * resolves against the request host for local network / reverse proxy compatibility.
+ */
+function getBaseUrl(req) {
+  if (config.baseUrl && !config.baseUrl.includes("localhost") && !config.baseUrl.includes("127.0.0.1")) {
+    return config.baseUrl;
+  }
+  const host = req.get("host");
+  if (host) {
+    const proto = req.headers["x-forwarded-proto"] || req.protocol || "http";
+    return `${proto}://${host}`;
+  }
+  return config.baseUrl;
+}
+
 // Rate limiter for POST /api/links (30 requests per 15 minutes per IP)
 const createLinkLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -58,20 +75,6 @@ router.post("/", createLinkLimiter, async (req, res, next) => {
         }
       }
     }
-
-function getBaseUrl(req) {
-  // If a non-localhost BASE_URL is set in config, respect it
-  if (config.baseUrl && !config.baseUrl.includes("localhost") && !config.baseUrl.includes("127.0.0.1")) {
-    return config.baseUrl;
-  }
-  // Otherwise dynamically match the host header from the request so LAN/phone/other devices work seamlessly
-  const host = req.get("host");
-  if (host) {
-    const proto = req.headers["x-forwarded-proto"] || req.protocol || "http";
-    return `${proto}://${host}`;
-  }
-  return config.baseUrl;
-}
 
     if (!createdLink) {
       const error = new Error("Failed to generate a unique short link. Please try again.");
