@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Link Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --mut: #8b8b8b;
+      --line: #1d1d1d;
+      --red: #ee3a18;
+      --purple: #a54dff;
+      --green: #2ef59a;
+      --coral: #f26b7d;
+      --cyan: #17e0ff;
+      color-scheme: dark;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: env(safe-area-inset-top, 0px);
+      height: 100%
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100%
+    }
+
+    /* hero */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+      background: radial-gradient(55% 38% at 62% 37%, rgba(255, 110, 130, .09), transparent 70%)
+    }
+
+    .stage {
+      position: absolute;
+      inset: 0;
+      will-change: opacity
+    }
+
+    #pipes {
+      will-change: transform;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible
+    }
+
+    .pipe {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: draw 1.5s cubic-bezier(.65, 0, .25, 1) forwards
+    }
+
+    #p-cyan {
+      stroke: var(--cyan);
+      animation-delay: .1s
+    }
+
+    #p-green {
+      stroke: var(--green);
+      animation-delay: .2s
+    }
+
+    #p-purple {
+      stroke: var(--purple);
+      animation-delay: .3s
+    }
+
+    #p-coral {
+      stroke: var(--coral);
+      animation-delay: .45s
+    }
+
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0
+      }
+    }
+
+    .title {
+      will-change: transform;
+      position: absolute;
+      left: clamp(96px, 30vw, 560px);
+      top: calc(37% - .5em);
+      margin: 0;
+      font-size: clamp(34px, 8.6vw, 140px);
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+      background: linear-gradient(90deg, #ff8c9c 0%, #ffc4cb 50%, #fff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 26px rgba(255, 120, 140, .28));
+      opacity: 0;
+      animation: fade 1s .9s ease forwards
+    }
+
+    @keyframes fade {
+      to {
+        opacity: 1
+      }
+    }
+
+    .info {
+      position: absolute;
+      left: clamp(96px, 30vw, 560px);
+      right: 22px;
+      top: calc(37% + clamp(34px, 8.6vw, 140px) * .5 + 34px);
+      max-width: 560px;
+      will-change: transform;
+      opacity: 0;
+      animation: fade 1s 1.3s ease forwards
+    }
+
+    .lead {
+      margin: 0 0 22px;
+      font-size: clamp(15px, 1.5vw, 19px);
+      line-height: 1.5;
+      color: #cfcfcf
+    }
+
+    .lead b {
+      color: var(--fg);
+      font-weight: 600
+    }
+
+    .pts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px
+    }
+
+    .pt {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--mut)
+    }
+
+    .pt b {
+      display: block;
+      color: var(--fg);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      margin-bottom: 2px
+    }
+
+    .pt i {
+      flex: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 5px
+    }
+
+    .enter {
+      position: absolute;
+      left: 50%;
+      bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: #cfcfcf;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #151515;
+      border: 1px solid #262626;
+      transition: background .2s, color .2s
+    }
+
+    .enter:hover {
+      background: #1f1f1f;
+      color: #fff
+    }
+
+    .cue {
+      position: absolute;
+      left: 50%;
+      bottom: 76px;
+      width: 2px;
+      height: 44px;
+      margin-left: -1px;
+      background: linear-gradient(#fff, transparent);
+      transform-origin: 50% 0;
+      animation: cue 2s ease-in-out infinite;
+      opacity: .5
+    }
+
+    @keyframes cue {
+      0% {
+        transform: scaleY(0)
+      }
+
+      50% {
+        transform: scaleY(1)
+      }
+
+      100% {
+        transform: scaleY(1);
+        opacity: 0
+      }
+    }
+
+    .rv {
+      opacity: 0;
+      transform: translateY(34px);
+      transition: opacity .8s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1)
+    }
+
+    .rv.in {
+      opacity: 1;
+      transform: none
+    }
+
+    .dot {
+      transition: transform .5s .2s cubic-bezier(.3, 1.6, .5, 1)
+    }
+
+    .rv:not(.in) .dot {
+      transform: scale(0)
+    }
+
+    .demo {
+      position: fixed;
+      right: 16px;
+      top: 50%;
+      width: min(320px, calc((100vw - 760px)/2 - 32px));
+      transform: translateY(-50%);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0
+    }
+
+    .demo svg {
+      display: block;
+      overflow: visible
+    }
+
+    .demo text {
+      font-family: Inter, system-ui, sans-serif;
+      transition: fill .3s
+    }
+
+    .demo circle.nd {
+      transition: fill .25s, stroke .25s
+    }
+
+    @media(max-width:1280px) {
+      .demo {
+        display: none
+      }
+    }
+
+    .nudge {
+      margin-top: auto;
+      padding-top: 56px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--mut)
+    }
+
+    .nudge i {
+      display: block;
+      width: 2px;
+      height: 36px;
+      margin: 10px auto 0;
+      background: #fff;
+      opacity: .4;
+      transform-origin: 50% 0;
+      animation: cue 2s ease-in-out infinite
+    }
+
+    .site-foot {
+      margin: 0 -22px;
+      padding: 28px 22px calc(28px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--line);
+      font-size: 14px
+    }
+
+    .sf {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px 28px;
+      flex-wrap: wrap
+    }
+
+    .sf-l {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      color: #666
+    }
+
+    .sf-m {
+      margin: 0;
+      color: #b5b5b5;
+      font-weight: 500;
+      letter-spacing: -.01em
+    }
+
+    .sf-l b {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--fg)
+    }
+
+    .sf-r {
+      display: flex;
+      gap: 6px 20px;
+      flex-wrap: wrap
+    }
+
+    .sf-r a {
+      color: var(--mut);
+      text-decoration: none;
+      transition: color .2s
+    }
+
+    .sf-r a:hover {
+      color: var(--fg)
+    }
+
+    /* app */
+    main {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: clamp(32px, 6vh, 64px) 22px 24px
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 600;
+      letter-spacing: -.04em;
+      line-height: 1.05
+    }
+
+    .sub {
+      margin: 0 0 30px;
+      color: var(--mut);
+      font-size: 15px;
+      line-height: 1.5
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px;
+      background: #0b0b0b;
+      border: 1px solid #232323;
+      border-radius: 999px;
+      transition: border-color .2s
+    }
+
+    .field:focus-within {
+      border-color: #4a4a4a
+    }
+
+    .field input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      background: none;
+      border: 0;
+      outline: 0;
+      color: var(--fg);
+      font: inherit;
+      font-size: 16px;
+      padding: 0 16px
+    }
+
+    .field input::placeholder {
+      color: #555
+    }
+
+    .exp-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-left: 1px solid #232323
+    }
+
+    .exp-label {
+      font-size: 11px;
+      color: var(--mut);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      white-space: nowrap
+    }
+
+    .exp-input {
+      background: none;
+      border: 0;
+      outline: 0;
+      color: var(--fg);
+      font: inherit;
+      font-size: 13px;
+      color-scheme: dark;
+      cursor: pointer
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer
+    }
+
+    .go {
+      background: var(--red);
+      color: #120d0b;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 26px;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -.01em;
+      transition: filter .2s, transform .1s;
+      white-space: nowrap
+    }
+
+    .go:hover {
+      filter: brightness(1.12)
+    }
+
+    .go:active {
+      transform: scale(.97)
+    }
+
+    .go:disabled {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px
+    }
+
+    .err {
+      min-height: 22px;
+      margin: 10px 18px 0;
+      font-size: 13px;
+      color: var(--coral)
+    }
+
+    .stats {
+      display: flex;
+      gap: 34px;
+      margin: 34px 0 8px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line)
+    }
+
+    .stats div {
+      font-size: 13px;
+      color: var(--mut)
+    }
+
+    .stats b {
+      display: block;
+      font-size: 30px;
+      color: var(--fg);
+      font-weight: 600;
+      letter-spacing: -.04em;
+      line-height: 1.1
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 12px 1fr auto;
+      gap: 6px 16px;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      grid-row: 1/3
+    }
+
+    .short-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .short {
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--fg);
+      text-decoration: none;
+      word-break: break-all
+    }
+
+    .short:hover {
+      text-decoration: underline
+    }
+
+    .badge-exp {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 500;
+      letter-spacing: 0.02em
+    }
+
+    .badge-exp.active {
+      background: rgba(46, 245, 154, .12);
+      color: var(--green);
+      border: 1px solid rgba(46, 245, 154, .25)
+    }
+
+    .badge-exp.expired {
+      background: rgba(242, 107, 125, .12);
+      color: var(--coral);
+      border: 1px solid rgba(242, 107, 125, .25)
+    }
+
+    .orig {
+      font-size: 13px;
+      color: var(--mut);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      grid-column: 2
+    }
+
+    .act {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      grid-column: 3;
+      grid-row: 1/3
+    }
+
+    .clk {
+      font-size: 12px;
+      color: var(--mut);
+      margin-right: 8px;
+      white-space: nowrap
+    }
+
+    .sec {
+      background: #121212;
+      color: #ddd;
+      border: 1px solid #262626;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px;
+      transition: background .2s
+    }
+
+    .sec:hover {
+      background: #1e1e1e
+    }
+
+    .x {
+      background: none;
+      border: 0;
+      color: #666;
+      font-size: 20px;
+      line-height: 1;
+      padding: 6px 8px;
+      transition: color .2s
+    }
+
+    .x:hover {
+      color: var(--coral)
+    }
+
+    .empty {
+      padding: 34px 0;
+      color: #666;
+      font-size: 15px
+    }
+
+    .end {
+      position: relative;
+      z-index: 2;
+      background: #000;
+      padding: 48px 22px 0
+    }
+
+    .run {
+      height: 130svh
+    }
+
+    .fin {
+      position: sticky;
+      top: 42svh;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .end .fl {
+      margin: 0;
+      font-size: clamp(22px, 3.3vw, 44px);
+      line-height: 1.08;
+      font-weight: 600;
+      letter-spacing: -.04em
+    }
+
+    .swap {
+      text-align: center
+    }
+
+    .swap .fl {
+      white-space: nowrap;
+      will-change: transform, opacity
+    }
+
+    .swap .fl span {
+      display: inline-block
+    }
+
+    .swap .l2 {
+      margin-top: .25em
+    }
+
+    .end .l1 {
+      color: #6b6b6b
+    }
+
+    .end .l2 {
+      color: #fff
+    }
+
+    @media(max-width:680px) {
+      .field {
+        flex-direction: column;
+        border-radius: 26px;
+        padding: 10px;
+        align-items: stretch
+      }
+
+      .field input[type="text"] {
+        padding: 10px 14px
+      }
+
+      .exp-field {
+        border-left: 0;
+        border-top: 1px solid #232323;
+        padding: 10px 14px;
+        justify-content: space-between
+      }
+
+      .go {
+        width: 100%
+      }
+
+      .row {
+        grid-template-columns: 12px 1fr
+      }
+
+      .act {
+        grid-column: 2;
+        grid-row: auto;
+        margin-top: 6px
+      }
+
+      .clk {
+        margin-right: auto
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      .cue,
+      .nudge i {
+        animation: none
+      }
+
+      .rv {
+        opacity: 1;
+        transform: none;
+        transition: none
+      }
+
+      .pipe {
+        animation: none;
+        stroke-dashoffset: 0
+      }
+
+      .title,
+      .info {
+        animation: none;
+        opacity: 1
+      }
+
+      html {
+        scroll-behavior: auto
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="hero" id="hero">
+    <div class="stage" id="stage">
+      <svg id="pipes" aria-hidden="true">
+        <path id="p-cyan" class="pipe" pathLength="1" />
+        <path id="p-green" class="pipe" pathLength="1" />
+        <path id="p-purple" class="pipe" pathLength="1" />
+        <path id="p-coral" class="pipe" pathLength="1" />
+      </svg>
+      <h1 class="title" id="title">Link Vault</h1>
+      <div class="info" id="info">
+        <p class="lead"><b>Link shortener studio.</b> Create, share and track short links from one place.</p>
+        <div class="pts">
+          <div class="pt"><i style="background:var(--green)"></i>
+            <div><b>Fast on every device</b>Works the same on phone, tablet and desktop.</div>
+          </div>
+          <div class="pt"><i style="background:var(--purple)"></i>
+            <div><b>Instant redirection</b>Visitors reach your page the moment they click.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cue" id="cue" aria-hidden="true"></div>
+    <a class="enter" href="#app">Click to enter</a>
+  </section>
+
+  <aside class="demo" id="demo" aria-hidden="true"><svg id="dsvg"></svg></aside>
+
+  <main id="app">
+    <h2>Make long links short.</h2>
+    <p class="sub">Paste any link, get a short one you can share anywhere.</p>
+    <div class="field">
+      <input id="url" type="text" inputmode="url" autocomplete="off" spellcheck="false"
+        placeholder="Paste a long link here" aria-label="Long link">
+      <div class="exp-field">
+        <label for="expiry" class="exp-label">Expires</label>
+        <input id="expiry" type="datetime-local" class="exp-input" aria-label="Expiration date (optional)">
+      </div>
+      <button class="go" id="go">Shorten</button>
+    </div>
+    <div class="err" id="err" role="alert" aria-live="polite"></div>
+    <div class="stats">
+      <div><b id="nLinks">0</b>Links</div>
+      <div><b id="nClicks">0</b>Clicks</div>
+    </div>
+    <div id="list" role="region" aria-label="Shortened links list"></div>
+    <div class="nudge" aria-hidden="true"><span>Keep scrolling</span><i></i></div>
+  </main>
+
+  <footer class="end" id="end">
+    <div class="run" id="run">
+      <div class="fin">
+        <div class="swap">
+          <h2 class="fl l1"><span>Long links in.</span></h2>
+          <h2 class="fl l2"><span>Short links out.</span></h2>
+        </div>
+      </div>
+    </div>
+    <div class="site-foot" id="foot">
+      <div class="sf">
+        <div class="sf-l"><b>Link Vault</b><span>© 2026 Link Vault</span></div>
+        <p class="sf-m">Every long link deserves a shorter way home.</p>
+        <nav class="sf-r" aria-label="Footer">
+          <a href="#app" data-go="shorten">Shorten a link</a>
+          <a href="#app" data-go="links">Your links</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      /* pipes: drawn in pixels so corners stay round at any size */
+      var hero = document.getElementById('hero'), title = document.getElementById('title');
+      function rp(p, r) {
+        var d = 'M' + p[0][0] + ' ' + p[0][1];
+        for (var i = 1; i < p.length - 1; i++) {
+          var a = p[i - 1], b = p[i], c = p[i + 1],
+          l1 = Math.hypot(b[0] - a[0], b[1] - a[1]), l2 = Math.hypot(c[0] - b[0], c[1] - b[1]),
+          s = Math.min(r, l1 / 2), t = Math.min(r, l2 / 2);
+          d += 'L' + (b[0] + (a[0] - b[0]) / l1 * s) + ' ' + (b[1] + (a[1] - b[1]) / l1 * s) + 'Q' + b[0] + ' ' + b[1] + ' ' + (b[0] + (c[0] - b[0]) / l2 * t) + ' ' + (b[1] + (c[1] - b[1]) / l2 * t);
+        }
+        var e = p[p.length - 1]; return d + 'L' + e[0] + ' ' + e[1];
+      }
+      function layout() {
+        var W = hero.clientWidth, H = hero.clientHeight;
+        var fs = parseFloat(getComputedStyle(title).fontSize), X = title.offsetLeft, Y = title.offsetTop + fs * .5;
+        var sw = Math.max(12, Math.min(30, W * .022)), r = sw * 2.1, o = -sw * 2;
+        var $ = function (id) { return document.getElementById(id) };
+        ['cyan', 'green', 'purple', 'coral'].forEach(function (n) { $('p-' + n).setAttribute('stroke-width', sw) });
+        $('p-cyan').setAttribute('d', rp([[.5 * X, Y], [.5 * X, Y + .3 * H], [o, Y + .3 * H]], r));
+        $('p-green').setAttribute('d', rp([[o, Y - .17 * H], [.5 * X, Y - .17 * H], [.5 * X, Y]], r));
+        $('p-purple').setAttribute('d', rp([[o, Y - .26 * H], [.28 * X, Y - .26 * H], [.28 * X, Y + .12 * H], [.66 * X, Y + .12 * H], [.66 * X, Y]], r));
+        $('p-coral').setAttribute('d', rp([[.1 * X, Y + .15 * H], [.1 * X, Y], [X - sw * .5 - 2, Y]], r));
+      }
+      layout(); addEventListener('resize', layout);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+
+      /* right side: a short link sending visitors to the same page on every device */
+      var demo = document.getElementById('demo'), dsvg = document.getElementById('dsvg'), NS = 'http://www.w3.org/2000/svg', dm = null;
+      function se(tag, at, parent) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); (parent || dsvg).appendChild(e); return e }
+      function buildDemo() {
+        var W = demo.clientWidth; if (!W) return;
+        var H = Math.round(Math.min(innerHeight * .72, 560)), x0 = 12, x1 = Math.min(x0 + 40, W * .2), top = 40, bot = H - 44;
+        dsvg.innerHTML = ''; dsvg.setAttribute('width', W); dsvg.setAttribute('height', H);
+        var pts = [[x0, top], [x0, .24 * H], [x1, .24 * H], [x1, .5 * H], [x0, .5 * H], [x0, .76 * H], [x1, .76 * H], [x1, bot]];
+        var d = rp(pts, 22);
+        se('text', { x: x0 - 2, y: 20, fill: '#fff', 'font-size': 20, 'font-weight': 600, 'letter-spacing': '-0.03em' }).textContent = 'How it works';
+        se('path', { d: d, fill: 'none', stroke: '#242424', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+        var prog = se('path', { d: d, fill: 'none', stroke: '#2ef59a', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1 });
+        var len = prog.getTotalLength(), defs = [
+          [x0, .12 * H, 'Paste', 'Drop in a long link', '#a54dff'],
+          [x1, .37 * H, 'Shorten', 'Get a short one', '#17e0ff'],
+          [x0, .63 * H, 'Share', 'Send it anywhere', '#f26b7d'],
+          [x1, bot, 'Track', 'See every click', '#2ef59a']
+        ];
+        se('circle', { cx: x0, cy: top, r: 7, fill: '#2ef59a' });
+        var nodes = defs.map(function (n) {
+          var best = 0, bd = 1e9;
+          for (var L = 0; L <= len; L += 2) { var q = prog.getPointAtLength(L), dd = Math.abs(q.x - n[0]) + Math.abs(q.y - n[1]); if (dd < bd) { bd = dd; best = L } }
+          var c = se('circle', { cx: n[0], cy: n[1], r: 8, fill: '#000', stroke: '#3a3a3a', 'stroke-width': 3, class: 'nd' });
+          var t1 = se('text', { x: n[0] + 22, y: n[1] + 1, fill: '#555', 'font-size': 15, 'font-weight': 600, 'letter-spacing': '-0.02em' }); t1.textContent = n[2];
+          var t2 = se('text', { x: n[0] + 22, y: n[1] + 19, fill: '#444', 'font-size': 12 }); t2.textContent = n[3];
+          return { c: c, t1: t1, t2: t2, col: n[4], nt: best / len };
+        });
+        var dot = se('circle', { r: 6, fill: '#fff', opacity: 0 });
+        dm = { prog: prog, len: len, nodes: nodes, dot: dot };
+        updateDemo();
+      }
+      function updateDemo() {
+        if (!dm) return;
+        var h = hero.clientHeight, start = h * .3, max = document.documentElement.scrollHeight - innerHeight;
+        var fh = innerHeight, end = document.getElementById('end').offsetTop - fh * 1.1; if (end < start + 200) end = start + 200;
+        var q = end > start ? Math.min(1, Math.max(0, (scrollY - start) / (end - start))) : 0;
+        if (calm) q = 1;
+        demo.style.opacity = calm ? 1 : Math.min(1, Math.max(0, (scrollY / h - .3) / .4)) * Math.min(1, Math.max(0, 1 - (scrollY - end - fh * .2) / (fh * .3)));
+        var t = Math.min(1, q / .92);
+        dm.prog.style.strokeDashoffset = 1 - t; dm.prog.style.opacity = t > 0 ? 1 : 0;
+        if (!calm && t > 0 && t < 1) { var pt = dm.prog.getPointAtLength(t * dm.len); dm.dot.setAttribute('cx', pt.x); dm.dot.setAttribute('cy', pt.y); dm.dot.setAttribute('opacity', 1) }
+        else dm.dot.setAttribute('opacity', 0);
+        dm.nodes.forEach(function (n) {
+          var on = t >= n.nt - .002;
+          n.c.setAttribute('fill', on ? n.col : '#000'); n.c.setAttribute('stroke', on ? n.col : '#3a3a3a');
+          n.t1.setAttribute('fill', on ? '#fff' : '#555'); n.t2.setAttribute('fill', on ? '#8b8b8b' : '#444');
+        });
+      }
+      addEventListener('resize', buildDemo);
+
+      /* scroll animations */
+      var calm = matchMedia('(prefers-reduced-motion:reduce)').matches;
+      var info = document.getElementById('info'), stage = document.getElementById('stage'), pipes = document.getElementById('pipes'), cue = document.getElementById('cue'), tick = false;
+      var run = document.getElementById('run'), fin = document.querySelector('.fin'), fl1 = document.querySelector('.end .l1'), fl2 = document.querySelector('.end .l2'), s1 = fl1.firstElementChild, s2 = fl2.firstElementChild, fm = { fs: 40, w1: 300, w2: 300, Wc: 600 };
+      function measureFinale() {
+        fm.fs = parseFloat(getComputedStyle(fl1).fontSize) || 40;
+        s1.style.letterSpacing = '0px'; s2.style.letterSpacing = '0px'; s1.style.marginRight = '0px'; s2.style.marginRight = '0px';
+        fm.w1 = s1.getBoundingClientRect().width; fm.w2 = s2.getBoundingClientRect().width; fm.Wc = fin.clientWidth;
+        updateFinale();
+      }
+      function setLS(el, ls) { el.style.letterSpacing = ls + 'px'; el.style.marginRight = (-ls) + 'px' }
+      function updateFinale() {
+        var vh = innerHeight, r = run.getBoundingClientRect(), st = vh * .42, spMax = Math.max(1, run.offsetHeight - (vh - st) + document.getElementById('foot').offsetHeight);
+        var c = function (v) { return Math.min(1, Math.max(0, v)) }, eo = function (t) { return 1 - Math.pow(1 - t, 3) };
+        var sp = calm ? 1 : c((st - r.top) / spMax), a = calm ? 1 : c((vh - r.top - 20) / (vh * .18));
+        var e1 = calm ? 1 : eo(c((sp - .05) / .5)), e2 = calm ? 1 : eo(c((sp - .45) / .4));
+        var tight = -.04 * fm.fs, wide1 = Math.max(0, (fm.Wc - fm.w1) / s1.textContent.length - 2);
+        var wide2 = .3 * fm.fs;
+        fl1.style.opacity = a; setLS(s1, wide1 + (tight - wide1) * e1);
+        fl2.style.opacity = e2; fl2.style.transform = 'translate3d(0,' + (26 * (1 - e2)) + 'px,0)'; setLS(s2, wide2 + (tight - wide2) * e2);
+      }
+      addEventListener('resize', measureFinale);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureFinale);
+      function onScroll() {
+        var y = scrollY, h = hero.clientHeight, p = Math.min(1, Math.max(0, y / h));
+        cue.style.opacity = Math.max(0, .5 - p * 3);
+        if (!calm) {
+          stage.style.opacity = Math.max(0, 1 - p * 1.4);
+          title.style.transform = 'translate3d(0,' + (p * h * .18) + 'px,0) scale(' + (1 - p * .08) + ')';
+          info.style.transform = 'translate3d(0,' + (p * h * .1) + 'px,0)';
+          pipes.style.transform = 'translate3d(' + (-p * 140) + 'px,0,0)';
+        }
+        updateDemo(); updateFinale();
+        tick = false;
+      }
+      addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(onScroll) } }, { passive: true });
+      addEventListener('resize', onScroll); buildDemo(); measureFinale(); onScroll();
+      var io = null;
+      if (!calm && 'IntersectionObserver' in window) {
+        io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target) } }) }, { threshold: .15, rootMargin: '0px 0px -6% 0px' });
+        ['#app h2', '#app .sub', '#app .field', '#app .stats'].forEach(function (q, i) { var el = document.querySelector(q); el.classList.add('rv'); el.style.transitionDelay = (i * 90) + 'ms'; io.observe(el) });
+      }
+      var rowsDone = false;
+      function revealRows() {
+        var rows = $l.querySelectorAll('.row');
+        if (rowsDone || !rows.length) return; rowsDone = true;
+        rows.forEach(function (r, i) {
+          if (!io) { return }
+          r.classList.add('rv'); r.style.transitionDelay = Math.min(i, 6) * 70 + 'ms'; io.observe(r);
+        });
+      }
+
+      /* Link Vault Frontend Integration */
+      var links = [], cols = ['var(--purple)', 'var(--green)', 'var(--coral)', 'var(--cyan)'];
+      var $u = document.getElementById('url'), $exp = document.getElementById('expiry'), $e = document.getElementById('err'), $l = document.getElementById('list'), $go = document.getElementById('go');
+
+      function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] }) }
+
+      function formatExpiryBadge(link) {
+        if (link.status === 'expired') {
+          return '<span class="badge-exp expired">Expired</span>';
+        }
+        if (link.expiresAt) {
+          var d = new Date(link.expiresAt);
+          return '<span class="badge-exp active" title="Expires ' + esc(d.toISOString()) + '">Expires ' + esc(d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</span>';
+        }
+        return '';
+      }
+
+      function render() {
+        document.getElementById('nLinks').textContent = links.length;
+        var totalClicks = links.reduce(function (a, b) { return a + (b.clickCount || 0) }, 0);
+        document.getElementById('nClicks').textContent = totalClicks;
+
+        if (!links.length) {
+          $l.innerHTML = '<div class="empty">Your short links will show up here.</div>';
+          return;
+        }
+
+        $l.innerHTML = links.map(function (k, i) {
+          var clicksText = k.clickCount + (k.clickCount === 1 ? ' click' : ' clicks');
+          var expBadge = formatExpiryBadge(k);
+          return '<div class="row">' +
+            '<span class="dot" style="background:' + cols[i % 4] + '"></span>' +
+            '<div class="short-wrap">' +
+            '<a class="short" href="' + esc(k.shortUrl) + '" target="_blank" rel="noopener">' + esc(k.shortUrl) + '</a>' +
+            expBadge +
+            '</div>' +
+            '<span class="orig" title="' + esc(k.originalUrl) + '">' + esc(k.originalUrl) + '</span>' +
+            '<div class="act">' +
+            '<span class="clk">' + clicksText + '</span>' +
+            '<button class="sec" data-copy="' + esc(k.shortUrl) + '">Copy</button>' +
+            '<button class="x" data-del="' + esc(k.id) + '" aria-label="Delete link">×</button>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+        revealRows();
+      }
+
+      async function loadLinks() {
+        try {
+          var res = await fetch('/api/links', { credentials: 'same-origin' });
+          if (!res.ok) {
+            throw new Error('Failed to load links');
+          }
+          links = await res.json();
+          render();
+        } catch (err) {
+          $l.innerHTML = '<div class="empty" style="color:var(--coral)">Unable to load links. Check server connection.</div>';
+        }
+      }
+
+      async function add() {
+        var urlVal = $u.value.trim();
+        if (!urlVal) {
+          $e.textContent = 'That doesn’t look like a link. Try something like example.com/page.';
+          return;
+        }
+        $e.textContent = '';
+
+        var payload = { originalUrl: urlVal };
+        if ($exp.value) {
+          var parsedDate = new Date($exp.value);
+          if (isNaN(parsedDate.getTime())) {
+            $e.textContent = 'Invalid expiration date.';
+            return;
+          }
+          payload.expiresAt = parsedDate.toISOString();
+        }
+
+        $go.disabled = true;
+        $go.textContent = 'Shortening...';
+
+        try {
+          var res = await fetch('/api/links', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+          });
+
+          var data = await res.json();
+          if (!res.ok) {
+            var msg = (data && data.error && data.error.message) ? data.error.message : 'Failed to create short link.';
+            $e.textContent = msg;
+            return;
+          }
+
+          $u.value = '';
+          $exp.value = '';
+          await loadLinks();
+        } catch (err) {
+          $e.textContent = 'Network error. Could not connect to Link Vault backend.';
+        } finally {
+          $go.disabled = false;
+          $go.textContent = 'Shorten';
+        }
+      }
+
+      function copyText(t, btn) {
+        function ok() { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy' }, 1400) }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(t).then(ok, fb);
+        } else fb();
+        function fb() {
+          var a = document.createElement('textarea');
+          a.value = t;
+          a.style.position = 'fixed';
+          a.style.opacity = '0';
+          document.body.appendChild(a);
+          a.select();
+          try { document.execCommand('copy'); ok() } catch (e) { }
+          document.body.removeChild(a);
+        }
+      }
+
+      async function deleteLink(id) {
+        if (!confirm('Are you sure you want to delete this short link?')) return;
+        try {
+          var res = await fetch('/api/links/' + encodeURIComponent(id), {
+            method: 'DELETE',
+            credentials: 'same-origin'
+          });
+          if (res.status === 204 || res.ok) {
+            await loadLinks();
+          } else {
+            var data = await res.json();
+            alert((data && data.error && data.error.message) || 'Could not delete link.');
+          }
+        } catch (err) {
+          alert('Network error while deleting link.');
+        }
+      }
+
+      document.querySelectorAll('[data-go]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          scrollTo({ top: document.getElementById('app').offsetTop, behavior: calm ? 'auto' : 'smooth' });
+          if (a.dataset.go === 'shorten') setTimeout(function () { $u.focus({ preventScroll: true }) }, calm ? 0 : 700);
+        });
+      });
+      $go.addEventListener('click', add);
+      $u.addEventListener('keydown', function (e) { if (e.key === 'Enter') add() });
+
+      $l.addEventListener('click', function (e) {
+        var copyBtn = e.target.closest('[data-copy]');
+        var delBtn = e.target.closest('[data-del]');
+        if (copyBtn) {
+          copyText(copyBtn.getAttribute('data-copy'), copyBtn);
+        } else if (delBtn) {
+          deleteLink(delBtn.getAttribute('data-del'));
+        }
+      });
+
+      // Automatically refresh link list and click counts when window regains focus
+      window.addEventListener('focus', loadLinks);
+
+      // Initial load
+      loadLinks();
+    })();
+  </script>
+</body>
+
+</html>
