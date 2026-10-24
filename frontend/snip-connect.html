@@ -969,16 +969,20 @@
         $l.innerHTML = links.map(function (k, i) {
           var clicksText = k.clickCount + (k.clickCount === 1 ? ' click' : ' clicks');
           var expBadge = formatExpiryBadge(k);
+          var shortUrl = k.shortUrl;
+          if (shortUrl && (shortUrl.indexOf('localhost') !== -1 || shortUrl.indexOf('127.0.0.1') !== -1) && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            shortUrl = window.location.origin + '/' + k.shortCode;
+          }
           return '<div class="row">' +
             '<span class="dot" style="background:' + cols[i % 4] + '"></span>' +
             '<div class="short-wrap">' +
-            '<a class="short" href="' + esc(k.shortUrl) + '" target="_blank" rel="noopener">' + esc(k.shortUrl) + '</a>' +
+            '<a class="short" href="' + esc(shortUrl) + '" target="_blank" rel="noopener">' + esc(shortUrl) + '</a>' +
             expBadge +
             '</div>' +
             '<span class="orig" title="' + esc(k.originalUrl) + '">' + esc(k.originalUrl) + '</span>' +
             '<div class="act">' +
             '<span class="clk">' + clicksText + '</span>' +
-            '<button class="sec" data-copy="' + esc(k.shortUrl) + '">Copy</button>' +
+            '<button class="sec" data-copy="' + esc(shortUrl) + '">Copy</button>' +
             '<button class="x" data-del="' + esc(k.id) + '" aria-label="Delete link">×</button>' +
             '</div>' +
             '</div>';

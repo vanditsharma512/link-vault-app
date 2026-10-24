@@ -59,6 +59,20 @@ router.post("/", createLinkLimiter, async (req, res, next) => {
       }
     }
 
+function getBaseUrl(req) {
+  // If a non-localhost BASE_URL is set in config, respect it
+  if (config.baseUrl && !config.baseUrl.includes("localhost") && !config.baseUrl.includes("127.0.0.1")) {
+    return config.baseUrl;
+  }
+  // Otherwise dynamically match the host header from the request so LAN/phone/other devices work seamlessly
+  const host = req.get("host");
+  if (host) {
+    const proto = req.headers["x-forwarded-proto"] || req.protocol || "http";
+    return `${proto}://${host}`;
+  }
+  return config.baseUrl;
+}
+
     if (!createdLink) {
       const error = new Error("Failed to generate a unique short link. Please try again.");
       error.status = 500;
@@ -66,7 +80,7 @@ router.post("/", createLinkLimiter, async (req, res, next) => {
       return next(error);
     }
 
-    res.status(201).json(createdLink.toClientJSON(config.baseUrl));
+    res.status(201).json(createdLink.toClientJSON(getBaseUrl(req)));
   } catch (err) {
     next(err);
   }
@@ -78,11 +92,12 @@ router.post("/", createLinkLimiter, async (req, res, next) => {
  */
 router.get("/", async (req, res, next) => {
   try {
+    const baseUrl = getBaseUrl(req);
     const links = await Link.find({ ownerId: req.ownerId })
       .sort({ createdAt: -1 })
       .exec();
 
-    const formatted = links.map((link) => link.toClientJSON(config.baseUrl));
+    const formatted = links.map((link) => link.toClientJSON(baseUrl));
     res.status(200).json(formatted);
   } catch (err) {
     next(err);
@@ -116,7 +131,7 @@ router.get("/:id", async (req, res, next) => {
       });
     }
 
-    res.status(200).json(link.toClientJSON(config.baseUrl));
+    res.status(200).json(link.toClientJSON(getBaseUrl(req)));
   } catch (err) {
     next(err);
   }
